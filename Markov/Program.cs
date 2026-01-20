@@ -1,7 +1,4 @@
 ﻿using Markov;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace GeradorTextoMarkov
@@ -10,7 +7,7 @@ namespace GeradorTextoMarkov
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("--- Inicializando Motor Markoviano (Estilo T9) ---");
+            Console.WriteLine("--- Inicializando Motor Markoviano (Bigrama 1° ordem) ---");
 
             //  Dataset
             var baseDeDados = DataSetFrases.ObterFrases;
