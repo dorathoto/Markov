@@ -101,26 +101,7 @@ namespace GeradorTextoMarkov
             }
         }
 
-        // escolha aleatória ponderada (mantido para referência)
-        public string? PreverProximaPalavra(string palavraAtual)
-        {
-            var chave = palavraAtual.ToLower().Trim();
 
-            if (!_transicoes.TryGetValue(chave, out var proximasOpcoes))
-                return null;
-
-            int totalOcorrencias = proximasOpcoes.Values.Sum();
-            int pivoAleatorio = _randomico.Next(totalOcorrencias);
-            int acumulado = 0;
-
-            foreach (var parChaveValor in proximasOpcoes)
-            {
-                acumulado += parChaveValor.Value;
-                if (pivoAleatorio < acumulado)
-                    return parChaveValor.Key;
-            }
-            return proximasOpcoes.Keys.First();
-        }
 
         /// <summary>
         /// Retorna as N palavras mais prováveis ordenadas por probabilidade (Estilo T9).
@@ -137,7 +118,6 @@ namespace GeradorTextoMarkov
             // Calcula o total para obter a porcentagem
             double totalOcorrencias = proximasOpcoes.Values.Sum();
 
-            // LINQ para ordenar por 'Value' (contagem) decrescente e calcular a probabilidade
             return proximasOpcoes
                 .OrderByDescending(kvp => kvp.Value)
                 .Take(maxSugestoes)
