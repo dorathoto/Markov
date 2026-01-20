@@ -28,7 +28,7 @@ Se quer aprofundar na matemática, recomendo o vídeo do melhor professor de cá
 
 ---------------------
 Investigando descobri algumas maravilhas, na época dos celulares T9 como o Nokia 3310 o meu código seria impossível de rodar.
-EX: Dictionary<string, int> isso aqui duplicaria muitas palavras e teria um custo impensavel, para um celular que teria menos de 1MB de ram, acredito que meu código precise de uns 512mb
+EX: Dictionary<string, int> isso aqui duplicaria muitas palavras e teria um custo impensavel, para um celular que teria menos de 16MB de ram, acredito que essa minha lógica mesmo em C precisaria de uns 500mb de ram.
 
 Descobri a solução: Árvores de Prefixos - Trie
 
