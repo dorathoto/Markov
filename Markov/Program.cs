@@ -19,45 +19,80 @@ namespace GeradorTextoMarkov
             preditor.Treinar(baseDeDados);
 
             Console.WriteLine("[INFO] Modelo treinado.");
-            Console.WriteLine("[INFO] Digite uma palavra para ver as 3 sugestões mais prováveis.");
-            Console.WriteLine("-------------------------------------------------------------");
-
+            Console.WriteLine("[INFO] Digite a frase e ele ira buscar a próxima palavra, espaço em branco é nova palavra.");
+            Console.WriteLine("\"Tecle algo para continuar\"");
+           _ =  Console.ReadLine();
             //  Loop de Teste Interativo
+
+            Console.Clear();
+            Console.CursorVisible = false;
+
+            int linhaTexto = 2;
+            int linhaSugestoes = 5;
+
+            string texto = "";
+            string palavraAtual = "";
+            string ultimaPalavra = "";
             while (true)
             {
-                Console.Write("\n> Entrada: ");
-                var entrada = Console.ReadLine()?.Trim();
+                var tecla = Console.ReadKey(intercept: true);
 
-                if (string.Equals(entrada, "sair", StringComparison.OrdinalIgnoreCase))
+                if (tecla.Key == ConsoleKey.Escape)
                     break;
 
-                if (string.IsNullOrWhiteSpace(entrada))
+                if (tecla.Key == ConsoleKey.Backspace)
+                {
+                    if (palavraAtual.Length > 0)
+                        palavraAtual = palavraAtual[..^1];
+                }
+                else if (tecla.Key == ConsoleKey.Spacebar)
+                {
+                    if (!string.IsNullOrWhiteSpace(palavraAtual))
+                    {
+                        ultimaPalavra = palavraAtual;
+                        texto += palavraAtual + " ";
+                        palavraAtual = "";
+                    }
+                }
+                else if (char.IsLetter(tecla.KeyChar))
+                {
+                    palavraAtual += tecla.KeyChar;
+                }
+
+                // Redesenha texto
+                Console.SetCursorPosition(0, linhaTexto);
+                Console.Write(new string(' ', Console.WindowWidth));
+                Console.SetCursorPosition(0, linhaTexto);
+                Console.Write($"> Texto: {texto}{palavraAtual}");
+
+                // Limpa sugestões
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.SetCursorPosition(0, linhaSugestoes + i);
+                    Console.Write(new string(' ', Console.WindowWidth));
+                }
+
+                if (string.IsNullOrEmpty(ultimaPalavra))
                     continue;
 
-                // Obtém as TOP 3 (Estilo T9)
-                var sugestoes = preditor.ObterSugestoes(entrada, 3);
+                var sugestoes = preditor.ObterSugestoes(ultimaPalavra, 3);
 
-                if (sugestoes.Any())
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine($"  Sugestões para '{entrada}':");
+                // Mostra sugestões fixas
+                Console.SetCursorPosition(0, linhaSugestoes);
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write($"Sugestões para '{ultimaPalavra}':");
 
-                    int rank = 1;
-                    foreach (var (palavra, probabilidade) in sugestoes)
-                    {
-                        // Formata como porcentagem para visualização do "Score"
-                        Console.WriteLine($"  {rank}. {palavra} ({probabilidade:P1})");
-                        rank++;
-                    }
-                    Console.ResetColor();
-                }
-                else
+                int linha = linhaSugestoes + 1;
+                foreach (var (palavra, prob) in sugestoes)
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine($"  [!] Nenhuma transição conhecida a partir de '{entrada}'.");
-                    Console.ResetColor();
+                    Console.SetCursorPosition(0, linha++);
+                    Console.Write($"- {palavra} ({prob:P1})");
                 }
+
+                Console.ResetColor();
             }
+
+            Console.CursorVisible = true;
         }
     }
 
